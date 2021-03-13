@@ -40,7 +40,11 @@ extension HeroModifier {
   public static var fade = HeroModifier { targetState in
     targetState.opacity = 0
   }
-
+    public static func fade(_ start: Float) -> HeroModifier {
+      return HeroModifier { targetState in
+        targetState.opacity = start
+      }
+    }   
   /**
    Force don't fade view during transition
    */
