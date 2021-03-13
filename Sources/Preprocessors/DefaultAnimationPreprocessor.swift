@@ -80,6 +80,7 @@ public enum HeroDefaultAnimationType {
   case pageIn(direction: Direction)
   case pageOut(direction: Direction)
   case fade
+    case fadeWithPercent(Float)
   case zoom
   case zoomOut
 
@@ -370,6 +371,22 @@ class DefaultAnimationPreprocessor: BasePreprocessor {
       #else
         if (!presenting && toOverFullScreen) || !fromView.isOpaque || (fromView.backgroundColor?.alphaComponent ?? 1) < 1 {
           context[fromView] = [.fade]
+        }
+      #endif
+
+      context[toView]!.append(.durationMatchLongest)
+      context[fromView]!.append(.durationMatchLongest)
+    case .fadeWithPercent(let percent):
+      // TODO: clean up this. overFullScreen logic shouldn't be here
+      if !(fromOverFullScreen && !presenting) {
+        context[toView] = [.fade(percent)]
+      }
+
+      #if os(tvOS)
+        context[fromView] = [.fade]
+      #else
+        if (!presenting && toOverFullScreen) || !fromView.isOpaque || (fromView.backgroundColor?.alphaComponent ?? 1) < 1 {
+          context[fromView] = [.fade(percent)]
         }
       #endif
 
